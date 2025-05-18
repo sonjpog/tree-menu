@@ -1,21 +1,32 @@
-"""tree_menu URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
 from django.urls import path
+from django.contrib import admin
+from menu.views import (
+    HomeView,
+    AboutView,
+    ContactView,
+    ServicesView,
+    ProductsView,
+    product_detail,
+    CategoryView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Основные страницы
+    path('', HomeView.as_view(), name='home'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('contact/', ContactView.as_view(), name='contact'),
+    path('services/', ServicesView.as_view(), name='services'),
+    path('products/', ProductsView.as_view(), name='products'),
+
+    # Динамические URL
+    path('products/<int:product_id>/', product_detail, name='product_detail'),
+    path('category/<int:category_id>/', CategoryView.as_view(), name='category'),
+
+    # Дополнительные страницы для теста вложенности
+    path('company/history/', AboutView.as_view(), name='history'),
+    path('company/team/', AboutView.as_view(), name='team'),
+    path('services/development/', ServicesView.as_view(), name='development'),
+    path('services/design/', ServicesView.as_view(), name='design'),
 ]

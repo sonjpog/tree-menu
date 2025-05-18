@@ -1,0 +1,10 @@
+<li class="menu-item {% if node.item.id in active_items %}active{% endif %}">
+    <a href="{{ node.item.get_url }}" class="menu-link">{{ node.item.name }}</a>
+    {% if node.children and (node.item.id in expanded_items or not node.item.parent) %}
+        <ul class="submenu">
+            {% for child in node.children %}
+                {% include "menu/menu_item.html" with node=child %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

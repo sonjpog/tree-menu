@@ -2,20 +2,24 @@ from django.db import models
 from django.urls import reverse, NoReverseMatch
 from django.utils.translation import gettext_lazy as _
 
+from tree_menu.constants import MAX_NAME_LENGHT, MAX_URL_LENGHT
+
 
 class MenuItem(models.Model):
-    name = models.CharField(_('name'), max_length=100)
+    """Модель для хранения пунктов меню."""
+
+    name = models.CharField(_('name'), max_length=MAX_NAME_LENGHT)
     named_url = models.CharField(
-        _('named URL'),
-        max_length=100,
+        _('Именованый URL'),
+        max_length=MAX_URL_LENGHT,
         blank=True,
-        help_text=_('Named URL from your urls.py file')
+        help_text=_('Названный URL из файла urls.py')
     )
     url = models.CharField(
         _('url'),
-        max_length=200,
+        max_length=MAX_URL_LENGHT,
         blank=True,
-        help_text=_('Relative path (e.g. /about/) or absolute URL')
+        help_text=_('Абсолютный путь')
     )
     parent = models.ForeignKey(
         'self',
@@ -23,18 +27,18 @@ class MenuItem(models.Model):
         null=True,
         blank=True,
         related_name='children',
-        verbose_name=_('parent item')
+        verbose_name=_('Родительский элемент')
     )
     menu_name = models.CharField(
-        _('menu name'),
-        max_length=50,
-        help_text=_('Name of the menu this item belongs to')
+        _('Название меню'),
+        max_length=MAX_NAME_LENGHT,
+        help_text=_('Имя меню, к которому принадлежит элемент')
     )
-    order = models.PositiveIntegerField(_('order'), default=0)
+    order = models.PositiveIntegerField(_('Порядок'), default=0)
 
     class Meta:
-        verbose_name = _('menu item')
-        verbose_name_plural = _('menu items')
+        verbose_name = _('Элемент меню')
+        verbose_name_plural = _('Элементы меню')
         ordering = ['order']
 
     def __str__(self):
@@ -52,4 +56,4 @@ class MenuItem(models.Model):
         item_url = self.get_url()
         if not item_url or item_url == '#':
             return False
-        return current_path.startswith(item_url)
+        return current_path == item_url or current_path.startswith(item_url + '/')
